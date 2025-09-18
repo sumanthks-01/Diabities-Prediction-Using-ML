@@ -16,6 +16,8 @@ pip install -r requirements.txt
 ```
 
 **🚀 Usage**
+
+### Local Development
 1. Navigate to the project directory
 2. Run the Flask application:
    ```bash
@@ -23,6 +25,12 @@ pip install -r requirements.txt
    ```
 3. Open your browser and go to `http://localhost:5000`
 4. Fill in the form with health parameters and click Submit to get your prediction
+
+### Vercel Deployment
+1. Install Vercel CLI: `npm i -g vercel`
+2. Login to Vercel: `vercel login`
+3. Deploy: `vercel --prod`
+4. Your app will be live at the provided URL
 
 **📊 How It Works**
 1. **Data Preprocessing**: Uses OrdinalEncoder to convert categorical features (gender, smoking_history) into numerical values
@@ -45,10 +53,13 @@ This tool is for educational and illustrative purposes only. It is not a substit
 ```
 Diabities_Prediction/
 ├── app.py                 # Flask backend application
+├── api/
+│   └── index.py          # Vercel entry point
 ├── templates/
 │   └── index.html        # HTML frontend with animations
 ├── data/
 │   └── diabetes_prediction_dataset.csv
 ├── requirements.txt       # Python dependencies
+├── vercel.json           # Vercel configuration
 └── README.md             # Project documentation
 ```
