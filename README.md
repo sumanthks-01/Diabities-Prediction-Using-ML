@@ -1,42 +1,54 @@
 **Diabetes Prediction Using ML**
  
-This project is a web-based application that uses machine learning to predict the risk of a person having diabetes based on a set of health-related parameters. The app provides a simple and user-friendly interface for individuals to input their data and receive an instant prediction.
+This project is a web-based application that uses machine learning to predict the risk of a person having diabetes based on a set of health-related parameters. The app provides a modern, interactive interface with colorful animations for users to input their data and receive instant predictions.
 
 **🌟 Features**
-Interactive Interface: Built with Streamlit, the application offers a clean and intuitive web form for data entry.
-
-Machine Learning Model: Utilizes a Random Forest Classifier trained on a diabetes prediction dataset to make accurate predictions.
-
-Real-time Predictions: The model provides an immediate "Positive" or "Negative" result based on the user's input.
-
-Simple Setup: The project is easy to set up and run locally, with minimal dependencies.
+- **Modern HTML Interface**: Beautiful gradient design with smooth hover animations and interactive form elements
+- **Machine Learning Model**: Utilizes a Random Forest Classifier trained on a diabetes prediction dataset for accurate predictions
+- **Real-time Predictions**: Instant "Positive" or "Negative" results with color-coded feedback
+- **Smart Input Guidance**: Average values displayed as placeholders to help users understand expected ranges
+- **Responsive Design**: Clean two-column layout that works across different screen sizes
+- **Visual Feedback**: Animated results with smooth transitions and hover effects
 
 **🛠️ Installation**
-To get this project running on your local machine, you'll need Python and a few libraries.
+```bash
+pip install -r requirements.txt
+```
 
 **🚀 Usage**
-Once you have installed the dependencies and updated the dataset path, you can run the application with a single command.
-Navigate to the project directory if you are not already there.
-
-Run the Streamlit application:
-
-Bash
-
-streamlit run <your-python-file-name>.py
-Open the link provided in your terminal (usually http://localhost:8501) to access the web application.
-
-Input your data into the form fields and click the Submit button to receive a prediction.
+1. Navigate to the project directory
+2. Run the Flask application:
+   ```bash
+   python app.py
+   ```
+3. Open your browser and go to `http://localhost:5000`
+4. Fill in the form with health parameters and click Submit to get your prediction
 
 **📊 How It Works**
-The application follows a standard machine learning workflow:
+1. **Data Preprocessing**: Uses OrdinalEncoder to convert categorical features (gender, smoking_history) into numerical values
+2. **Model Training**: Random Forest Classifier trained on 70% of the dataset with 30% reserved for testing
+3. **Web Interface**: Flask backend serves HTML form with JavaScript for real-time interaction
+4. **Prediction**: User input is processed through the trained model via REST API
+5. **Visual Results**: Color-coded results with smooth animations provide immediate feedback
 
-Data Preprocessing: It uses OrdinalEncoder from scikit-learn to convert categorical features like gender and smoking_history into numerical values that the model can understand.
+**🎨 Interface Features**
+- Gradient purple background with modern styling
+- Hover animations on form elements
+- Focus effects with glowing borders
+- Animated result display with color coding
+- Average value placeholders for user guidance
 
-Model Training: The code splits the dataset into training and testing sets, then trains a Random Forest Classifier on the training data. This ensemble model is well-suited for classification tasks and generally provides high accuracy.
-
-Prediction: When a user enters their data, the application uses the trained model to predict whether the person is likely to have diabetes (represented by 1) or not (0).
-
-Result Display: Based on the model's output, it displays a clear "Negative" or "Positive" result on the web page.
-
-**Important Note**
+**⚠️ Important Note**
 This tool is for educational and illustrative purposes only. It is not a substitute for professional medical advice. Always consult with a qualified healthcare professional for any health concerns or before making medical decisions.
+
+**📁 Project Structure**
+```
+Diabities_Prediction/
+├── app.py                 # Flask backend application
+├── templates/
+│   └── index.html        # HTML frontend with animations
+├── data/
+│   └── diabetes_prediction_dataset.csv
+├── requirements.txt       # Python dependencies
+└── README.md             # Project documentation
+```

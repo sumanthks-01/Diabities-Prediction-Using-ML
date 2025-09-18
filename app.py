@@ -3,91 +3,69 @@ import pandas as pd
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn import metrics
-import streamlit as st
+from flask import Flask, render_template, request, jsonify
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
+app = Flask(__name__)
 
-# dataset from my Github
-df=pd.read_csv(r"E:\Diabities_Prediction\data\diabetes_prediction_dataset.csv")
+# Load and preprocess data
+df = pd.read_csv(r"E:\Diabities_Prediction\data\diabetes_prediction_dataset.csv")
 
+enc = OrdinalEncoder()
+df["smoking_history"] = enc.fit_transform(df[["smoking_history"]])
+df["gender"] = enc.fit_transform(df[["gender"]])
 
-# Preprocessing using Ordinal Encoder
-enc=OrdinalEncoder()
-df["smoking_history"]=enc.fit_transform(df[["smoking_history"]])
-df["gender"]=enc.fit_transform(df[["gender"]])
+x = df.drop("diabetes", axis=1)
+y = df["diabetes"]
 
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
+model = RandomForestClassifier().fit(x_train, y_train)
 
-# Define Independent and Dependent Variables
-x= df.drop("diabetes",axis=1)
-y=df["diabetes"]
+@app.route('/')
+def index():
+    # Calculate average values for placeholders
+    avg_bmi = round(df['bmi'].mean(), 1)
+    avg_hba1c = round(df['HbA1c_level'].mean(), 1)
+    avg_glucose = round(df['blood_glucose_level'].mean(), 1)
+    
+    averages = {
+        'bmi': avg_bmi,
+        'hba1c_level': avg_hba1c,
+        'blood_glucose_level': avg_glucose
+    }
+    
+    return render_template('index.html', averages=averages)
 
-
-# 70% data - Train and 30% data - Test
-x_train , x_test , y_train, y_test = train_test_split(x,y,test_size=0.3)
-
-
-# RandomForest Algorithm
-model = RandomForestClassifier().fit(x_train,y_train)
-y_pred = model.predict(x_test)
-accuracy = metrics.accuracy_score(y_test,y_pred)
-
-
-
-st.set_page_config(page_title='Diabetes Prediction', page_icon=':dna:')
-st.markdown(f'<h1 style="text-align: center;">Diabetes Prediction</h1>', unsafe_allow_html=True)
-
-col1, col2 = st.columns(2, gap='large')
-
-with col1:
-    gender = st.selectbox(label='Gender', options=['Male', 'Female', 'Other'])
-    gender_dict = {'Female':0.0, 'Male':1.0, 'Other':2.0}
-
-    age = st.text_input(label='Age')
-
-    hypertension = st.selectbox(label='Hypertension', options=['No', 'Yes'])
-    hypertension_dict = {'No':0, 'Yes':1}
-
-    heart_disease = st.selectbox(label='Heart Disease', options=['No', 'Yes'])
-    heart_disease_dict = {'No':0, 'Yes':1}
-
-with col2:
-    smoking_history = st.selectbox(label='Smoking History', 
-                                   options=['Never', 'Current', 'Former', 'Ever', 'Not Current', 'No Info'])
-    smoking_history_dict = {'Never':4.0, 'No Info':0.0, 'Current':1.0, 
-                            'Former':3.0, 'Ever':2.0, 'Not Current':5.0}
-
-    bmi = st.text_input(label='BMI')
-
-    hba1c_level = st.text_input(label='HbA1c Level')
-
-    blood_glucose_level = st.text_input(label='Blood Glucose Level')
-
-st.write('')
-st.write('')
-col1,col2 = st.columns([0.438,0.562])
-with col2:
-    submit = st.button(label='Submit')
-st.write('')
-
-if submit:
+@app.route('/predict', methods=['POST'])
+def predict():
     try:
-        user_data = np.array( [[ gender_dict[gender], age, hypertension_dict[hypertension], heart_disease_dict[heart_disease],
-                                smoking_history_dict[smoking_history], bmi, hba1c_level, blood_glucose_level ]] )
+        data = request.json
+        
+        gender_dict = {'Female': 0.0, 'Male': 1.0, 'Other': 2.0}
+        hypertension_dict = {'No': 0, 'Yes': 1}
+        heart_disease_dict = {'No': 0, 'Yes': 1}
+        smoking_history_dict = {'Never': 4.0, 'No Info': 0.0, 'Current': 1.0, 
+                               'Former': 3.0, 'Ever': 2.0, 'Not Current': 5.0}
+        
+        user_data = np.array([[
+            gender_dict[data['gender']],
+            float(data['age']),
+            hypertension_dict[data['hypertension']],
+            heart_disease_dict[data['heart_disease']],
+            smoking_history_dict[data['smoking_history']],
+            float(data['bmi']),
+            float(data['hba1c_level']),
+            float(data['blood_glucose_level'])
+        ]])
+        
+        result = model.predict(user_data)[0]
+        prediction = "Negative" if result == 0 else "Positive"
+        
+        return jsonify({'success': True, 'prediction': prediction})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': 'Please fill all required fields correctly'})
 
-        test_result = model.predict(user_data)
-
-        if test_result[0] == 0:
-            col1,col2,col3 = st.columns([0.33,0.30,0.35])
-            with col2:
-                st.success('Diabetes Result: Negative')
-            st.balloons()
-
-        else:
-            col1,col2,col3 = st.columns([0.215,0.57,0.215])
-            with col2:
-                st.error('Diabetes Result: Positive (Please Consult with Doctor)')
-
-    except:
-        st.warning('Please fill the all required informations')
+if __name__ == '__main__':
+    app.run(debug=True)
