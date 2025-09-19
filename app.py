@@ -10,9 +10,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 app = Flask(__name__)
 
 # Load and preprocess data
-import os
-data_path = os.path.join(os.path.dirname(__file__), 'data', 'diabetes_prediction_dataset.csv')
-df = pd.read_csv(data_path)
+df = pd.read_csv(r"E:\Diabities_Prediction\data\diabetes_prediction_dataset.csv")
 
 enc = OrdinalEncoder()
 df["smoking_history"] = enc.fit_transform(df[["smoking_history"]])
@@ -69,9 +67,5 @@ def predict():
     except Exception as e:
         return jsonify({'success': False, 'error': 'Please fill all required fields correctly'})
 
-# For Vercel deployment
 if __name__ == '__main__':
     app.run(debug=True)
-else:
-    # This is for Vercel
-    app = app

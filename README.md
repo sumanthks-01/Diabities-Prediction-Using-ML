@@ -26,11 +26,11 @@ pip install -r requirements.txt
 3. Open your browser and go to `http://localhost:5000`
 4. Fill in the form with health parameters and click Submit to get your prediction
 
-### Vercel Deployment
-1. Install Vercel CLI: `npm i -g vercel`
-2. Login to Vercel: `vercel login`
-3. Deploy: `vercel --prod`
-4. Your app will be live at the provided URL
+### GitHub Pages Deployment
+1. Push your code to a GitHub repository
+2. Go to repository Settings → Pages
+3. Select source branch (usually `main`)
+4. Your app will be live at `https://username.github.io/repository-name`
 
 **📊 How It Works**
 1. **Data Preprocessing**: Uses OrdinalEncoder to convert categorical features (gender, smoking_history) into numerical values
@@ -52,14 +52,12 @@ This tool is for educational and illustrative purposes only. It is not a substit
 **📁 Project Structure**
 ```
 Diabities_Prediction/
-├── app.py                 # Flask backend application
-├── api/
-│   └── index.py          # Vercel entry point
+├── index.html            # Main HTML file for GitHub Pages
+├── app.py                # Flask backend (for local development)
 ├── templates/
-│   └── index.html        # HTML frontend with animations
+│   └── index.html        # Flask template
 ├── data/
 │   └── diabetes_prediction_dataset.csv
-├── requirements.txt       # Python dependencies
-├── vercel.json           # Vercel configuration
-└── README.md             # Project documentation
+├── requirements.txt      # Python dependencies
+└── README.md            # Project documentation
 ```

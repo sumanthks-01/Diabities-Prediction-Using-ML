@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        h1 { 
+            text-align: center; 
+            color: white; 
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .form-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 25px; 
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+            transition: transform 0.2s ease;
+        }
+        .form-group:hover {
+            transform: translateY(-2px);
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #4a5568;
+            font-size: 0.95em;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+        input:hover, select:hover {
+            border-color: #cbd5e0;
+            background: white;
+        }
+        .submit-container { 
+            text-align: center; 
+            margin-top: 30px; 
+            grid-column: 1 / -1;
+        }
+        button { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 15px 40px; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        button:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(-1px);
+        }
+        .result { 
+            margin-top: 25px; 
+            padding: 20px; 
+            border-radius: 12px; 
+            text-align: center; 
+            font-weight: bold; 
+            font-size: 18px;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .positive { 
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #742a2a; 
+            border-left: 5px solid #e53e3e;
+        }
+        .negative { 
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #22543d; 
+            border-left: 5px solid #38a169;
+        }
+        .error { 
+            background: linear-gradient(135deg, #fefcbf 0%, #faf089 100%);
+            color: #744210; 
+            border-left: 5px solid #d69e2e;
+        }
+    </style>
+</head>
+<body>
+    <h1>Diabetes Prediction</h1>
+    
+    <form id="predictionForm">
+        <div class="form-container">
+            <div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="41.9" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="hypertension">Hypertension</label>
+                    <select id="hypertension" required>
+                        <option value="">Select</option>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="heart_disease">Heart Disease</label>
+                    <select id="heart_disease" required>
+                        <option value="">Select</option>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div>
+                <div class="form-group">
+                    <label for="smoking_history">Smoking History</label>
+                    <select id="smoking_history" required>
+                        <option value="">Select</option>
+                        <option value="Never">Never</option>
+                        <option value="Current">Current</option>
+                        <option value="Former">Former</option>
+                        <option value="Ever">Ever</option>
+                        <option value="Not Current">Not Current</option>
+                        <option value="No Info">No Info</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bmi">BMI</label>
+                    <input type="number" step="0.1" id="bmi" placeholder="27.3" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="hba1c_level">HbA1c Level</label>
+                    <input type="number" step="0.1" id="hba1c_level" placeholder="5.5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="blood_glucose_level">Blood Glucose Level</label>
+                    <input type="number" step="0.1" id="blood_glucose_level" placeholder="159.0" required>
+                </div>
+            </div>
+            
+            <div class="submit-container">
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        // Simple rule-based prediction (for demo purposes)
+        function predictDiabetes(data) {
+            let score = 0;
+            
+            // Age factor
+            if (data.age > 45) score += 2;
+            else if (data.age > 35) score += 1;
+            
+            // BMI factor
+            if (data.bmi > 30) score += 2;
+            else if (data.bmi > 25) score += 1;
+            
+            // HbA1c factor
+            if (data.hba1c_level > 6.5) score += 3;
+            else if (data.hba1c_level > 5.7) score += 2;
+            
+            // Glucose factor
+            if (data.blood_glucose_level > 200) score += 3;
+            else if (data.blood_glucose_level > 140) score += 2;
+            else if (data.blood_glucose_level > 100) score += 1;
+            
+            // Hypertension
+            if (data.hypertension === 'Yes') score += 1;
+            
+            // Heart disease
+            if (data.heart_disease === 'Yes') score += 1;
+            
+            // Smoking
+            if (data.smoking_history === 'Current') score += 1;
+            
+            return score >= 5 ? 'Positive' : 'Negative';
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                gender: document.getElementById('gender').value,
+                age: parseFloat(document.getElementById('age').value),
+                hypertension: document.getElementById('hypertension').value,
+                heart_disease: document.getElementById('heart_disease').value,
+                smoking_history: document.getElementById('smoking_history').value,
+                bmi: parseFloat(document.getElementById('bmi').value),
+                hba1c_level: parseFloat(document.getElementById('hba1c_level').value),
+                blood_glucose_level: parseFloat(document.getElementById('blood_glucose_level').value)
+            };
+            
+            try {
+                const prediction = predictDiabetes(formData);
+                const resultDiv = document.getElementById('result');
+                
+                const className = prediction === 'Negative' ? 'negative' : 'positive';
+                const message = prediction === 'Negative' ? 
+                    'Diabetes Result: Negative' : 
+                    'Diabetes Result: Positive (Please Consult with Doctor)';
+                resultDiv.innerHTML = `<div class="result ${className}">${message}</div>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="result error">Please fill all required fields correctly.</div>';
+            }
+        });
+    </script>
+</body>
+</html>
